@@ -1,4 +1,5 @@
 from . import preprocessing
+from . import categorization
 import pandas as pd
 
 class CTGViz:
@@ -53,7 +54,7 @@ class CTGViz:
         """
         return preprocessing.check_data_completeness(self)
 
-    def vars_classification(self) -> tuple[list[str], list[str]]:
+    def vars_categorization(self) -> tuple[list[str], list[str]]:
         """
         Clasifica las variables del DataFrame en discretas y continuas.
         
@@ -72,5 +73,5 @@ class CTGViz:
             >>> print(f"Variables continuas: {len(continuas)}")
             >>> print(f"Variables discretas: {len(discretas)}")
         """
-        return preprocessing.vars_clasification(self)
+        return categorization.categorization(self)
     
