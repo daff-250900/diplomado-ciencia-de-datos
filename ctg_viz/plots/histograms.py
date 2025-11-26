@@ -3,7 +3,6 @@ Histogram plotting functions
 """
 
 from plotly.graph_objs import Figure
-import pandas as pd
 
 def plot_histogram(self) -> None:
     """Plot an interactive histogram using Plotly.
