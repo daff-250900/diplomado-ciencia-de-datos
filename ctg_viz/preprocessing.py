@@ -28,7 +28,7 @@ def check_data_completeness(self) -> None:
     total_missing = self.df.isnull().sum()
 
     # Calcula el porcentaje de datos faltantes
-    total_cells: int = self.df.size
+    total_cells: int = self.df.shape[0]
     percentage_missing = (total_missing / total_cells) * 100
 
     # Escribir los resultados en el buffer
