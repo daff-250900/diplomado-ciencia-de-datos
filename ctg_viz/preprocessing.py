@@ -10,21 +10,11 @@ def check_data_completeness(self) -> None:
     Analiza la completitud de los datos en el DataFrame.
     
     Calcula estadísticas sobre datos faltantes, tipos de datos y estadísticas
-    descriptivas. El resultado se muestra en un contenedor HTML con scroll
-    y fondo negro para mejor visualización en notebooks.
-    
+    descriptivas.
+
     Args:
         self: Instancia de CTGViz que contiene el DataFrame a analizar.
             Debe tener el atributo `df` con un DataFrame de pandas.
-    
-    Returns:
-        None: La función muestra el resultado directamente usando IPython.display.
-    
-    Note:
-        El output se muestra en un contenedor HTML con las siguientes características:
-        - Altura máxima de 500px con scroll vertical y horizontal
-        - Fondo negro con texto blanco
-        - Fuente monospace para mejor legibilidad
     
     Example:
         >>> from ctg_viz import CTGViz
@@ -97,11 +87,6 @@ def vars_clasification(self) -> tuple[list[str], list[str]]:
         tuple[list[str], list[str]]: Tupla con dos listas:
             - Primera lista (list[str]): Nombres de las variables continuas
             - Segunda lista (list[str]): Nombres de las variables discretas
-    
-    Note:
-        La lógica de clasificación considera que una variable numérica con
-        muchos valores únicos (>10) es continua, mientras que las que tienen
-        pocos valores únicos o son de tipo object se consideran discretas.
     
     Example:
         >>> from ctg_viz import CTGViz
