@@ -2,32 +2,45 @@
 Barplot plotting functions
 """
 
-def plot_barplot(self) -> None:
-    """Plot an interactive barplot using Plotly.
+def plot_barplot(self, asc: bool | None = None, show: bool = True) -> None:
+    """Plot an interactive horizontal barplot using Plotly.
 
-    Parameters:
-    - data: Sequence[float]: Numeric data to plot.
-    - title: str: Title of the plot.
-    - xlabel: str: Label for the x-axis.
-    - ylabel: str: Label for the y-axis.
-    - show: bool: Whether to immediately display the figure (default True).
+    Parámetros:
+    - self: DataFrame que contiene las columnas a graficar.
+    - asc: bool | None: Orden de las barras.
+        * True  -> orden ascendente (menor a mayor frecuencia, barras grandes abajo)
+        * False -> orden descendente (mayor a menor frecuencia, barras grandes arriba)
+        * None  -> valor por defecto (False: descendente)
+    - show: bool: Si se muestra inmediatamente la figura (True por defecto).
 
-    Returns:
-    - None
+    Comportamiento:
+    - Barras horizontales (orientación 'h').
+    - Eje X: frecuencia (conteo). Eje Y: categoría.
+    - Se ordena por frecuencia según parámetro asc.
     """
     import plotly.express as px
     from plotly.graph_objs import Figure
-
-    xlabel: str = "Category"
-    ylabel: str = "Count"
-    show: bool = True
+    
+    x_axis_label: str = "Frecuencia"
+    y_axis_label: str = "Categoría"
+    ascending: bool = False if asc is None else asc
 
     for col in self.columns:
-        title: str = col + " Barplot"
+        title: str = f"{col} - Gráfico de Barras"
         databar = self[col].value_counts().reset_index()
-        databar.columns = ['Category', 'Count']
-        fig: Figure = px.bar(databar, x=xlabel, y=ylabel, title=title)
-        fig.update_layout(xaxis_title=xlabel, yaxis_title=ylabel)
+        databar.columns = ['Category', 'Count'] 
+        # Ordenar por frecuencia
+        databar = databar.sort_values('Count', ascending=ascending)
+        fig: Figure = px.bar(
+            databar,
+            x='Count',
+            y='Category',
+            title=title,
+            orientation='h',
+            text='Count'
+        )
+        fig.update_traces(textposition='outside')
+        fig.update_layout(xaxis_title=x_axis_label, yaxis_title=y_axis_label)
         if show:
             fig.show()
     
