@@ -22,4 +22,4 @@ class __PlotModules:
         """
         self.df: pd.DataFrame = dataframe
 
-__all__ = ['histograms', 'barplots', 'boxplots', 'density', 'heatmap', '__PlotModules']
+__all__ = ['histograms', 'barplots', 'boxplots', 'density', 'heatmap', 'dotplots', 'violin', 'lineplots','__PlotModules']
