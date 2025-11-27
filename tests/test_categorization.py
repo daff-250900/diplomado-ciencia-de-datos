@@ -26,9 +26,9 @@ class TestCategorization(unittest.TestCase):
         """Verifica que las variables continuas (numéricas con >10 valores únicos) se identifiquen correctamente."""
         # Crear DataFrame de prueba con una variable continua
         df = pd.DataFrame({
-            'var_continua': range(1, 21),  # 20 valores únicos
-            'var_discreta': [1, 2, 3] * 7,  # 3 valores únicos repetidos
-            'var_categorica': ['A', 'B', 'C'] * 7
+            'var_continua': range(1, 22),  # 21 valores únicos (1-21)
+            'var_discreta': [1, 2, 3] * 7,  # 21 valores (3 únicos repetidos)
+            'var_categorica': ['A', 'B', 'C'] * 7  # 21 valores (3 únicos repetidos)
         })
         
         viz_mock = MockCTGViz(df)
@@ -41,11 +41,11 @@ class TestCategorization(unittest.TestCase):
 
     def test_categorization_variables_discretas(self):
         """Verifica que las variables discretas (<=10 valores únicos, object, bool) se identifiquen correctamente."""
-        # Crear DataFrame de prueba con variables discretas
+        # Crear DataFrame de prueba con variables discretas (todos con 20 filas)
         df = pd.DataFrame({
-            'var_numerica_pocos_valores': [1, 2, 3, 4, 5] * 4,  # 5 valores únicos
-            'var_categorica': ['A', 'B', 'C'] * 7,
-            'var_booleana': [True, False] * 10
+            'var_numerica_pocos_valores': [1, 2, 3, 4, 5] * 4,  # 20 valores (5 únicos)
+            'var_categorica': ['A', 'B', 'C', 'D'] * 5,  # 20 valores (4 únicos)
+            'var_booleana': [True, False] * 10  # 20 valores (2 únicos)
         })
         
         viz_mock = MockCTGViz(df)

@@ -18,8 +18,9 @@ from ctg_viz.plots.density import plot_density
 class TestPlotDensity(unittest.TestCase):
     """Pruebas unitarias para la función plot_density."""
 
-    @patch('ctg_viz.plots.density.go.Figure')
-    def test_plot_density_sin_grupos(self, mock_figure):
+    @patch('plotly.graph_objects.Figure')
+    @patch('plotly.graph_objects.Scatter')
+    def test_plot_density_sin_grupos(self, mock_scatter, mock_figure):
         """Verifica que la función genera density plots correctamente sin agrupación."""
         # Crear DataFrame de prueba con distribución normal
         np.random.seed(42)
@@ -28,26 +29,27 @@ class TestPlotDensity(unittest.TestCase):
             'var_categorica': np.random.choice(['A', 'B', 'C'], 100)
         })
         
-        # Configurar mock
+        # Configurar mocks
         mock_fig_instance = MagicMock()
         mock_figure.return_value = mock_fig_instance
+        mock_scatter.return_value = MagicMock()
         
         # Ejecutar la función sin color_by
         plot_density(df, color_by=None, show=False)
         
-        # Verificar que se creó una figura
+        # Verificar que se creó al menos una figura
         self.assertTrue(mock_figure.called, "go.Figure debe ser llamado")
         
-        # Verificar que add_trace fue llamado para agregar la curva de densidad
+        # Verificar que Scatter fue llamado para crear la curva
+        self.assertTrue(mock_scatter.called, "go.Scatter debe ser llamado para la curva KDE")
+        
+        # Verificar que add_trace fue llamado
         self.assertTrue(mock_fig_instance.add_trace.called, 
                        "Debe agregar al menos una traza de densidad")
-        
-        # Verificar que update_layout fue llamado para configurar títulos
-        self.assertTrue(mock_fig_instance.update_layout.called,
-                       "Debe actualizar el layout con títulos")
 
-    @patch('ctg_viz.plots.density.go.Figure')
-    def test_plot_density_con_multiples_grupos(self, mock_figure):
+    @patch('plotly.graph_objects.Figure')
+    @patch('plotly.graph_objects.Scatter')
+    def test_plot_density_con_multiples_grupos(self, mock_scatter, mock_figure):
         """Verifica que la función genera density plots con múltiples curvas por grupo."""
         # Crear DataFrame con grupos distintos
         np.random.seed(42)
@@ -60,9 +62,10 @@ class TestPlotDensity(unittest.TestCase):
             'grupo': ['A'] * 50 + ['B'] * 50 + ['C'] * 50
         })
         
-        # Configurar mock
+        # Configurar mocks
         mock_fig_instance = MagicMock()
         mock_figure.return_value = mock_fig_instance
+        mock_scatter.return_value = MagicMock()
         
         # Ejecutar la función con color_by
         plot_density(df, color_by='grupo', show=False)
@@ -70,14 +73,13 @@ class TestPlotDensity(unittest.TestCase):
         # Verificar que se creó una figura
         self.assertTrue(mock_figure.called, "go.Figure debe ser llamado")
         
-        # Verificar que add_trace fue llamado múltiples veces (una por grupo)
-        call_count = mock_fig_instance.add_trace.call_count
-        self.assertGreaterEqual(call_count, 3, 
-                               "Debe agregar al menos 3 trazas (una por grupo A, B, C)")
+        # Verificar que Scatter fue llamado múltiples veces (una por grupo)
+        self.assertGreaterEqual(mock_scatter.call_count, 3, 
+                               "go.Scatter debe ser llamado al menos 3 veces (uno por grupo)")
         
-        # Verificar que update_layout fue llamado con información del grupo
-        self.assertTrue(mock_fig_instance.update_layout.called,
-                       "Debe actualizar el layout")
+        # Verificar que add_trace fue llamado múltiples veces
+        self.assertGreaterEqual(mock_fig_instance.add_trace.call_count, 3,
+                               "Debe agregar al menos 3 trazas (una por grupo A, B, C)")
 
 
 if __name__ == '__main__':

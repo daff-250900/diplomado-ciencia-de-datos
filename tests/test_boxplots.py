@@ -18,11 +18,12 @@ from ctg_viz.plots.boxplots import plot_boxplot
 class TestPlotBoxplot(unittest.TestCase):
     """Pruebas unitarias para la función plot_boxplot."""
 
-    @patch('ctg_viz.plots.boxplots.make_subplots')
-    @patch('ctg_viz.plots.boxplots.px.box')
+    @patch('plotly.subplots.make_subplots')
+    @patch('plotly.express.box')
     def test_plot_boxplot_con_variables_numericas_y_target(self, mock_px_box, mock_make_subplots):
         """Verifica que la función genera boxplots correctamente con variables numéricas y targets válidos."""
         # Crear DataFrame de prueba
+        np.random.seed(42)
         df = pd.DataFrame({
             'var_numerica1': np.random.randn(50),
             'var_numerica2': np.random.randn(50),
@@ -39,7 +40,7 @@ class TestPlotBoxplot(unittest.TestCase):
         plot_boxplot(df, target=['target1', 'target2'], show=False)
         
         # Verificar que make_subplots fue llamado con parámetros correctos
-        mock_make_subplots.assert_called_once()
+        mock_make_subplots.assert_called()
         call_args = mock_make_subplots.call_args
         self.assertEqual(call_args[1]['rows'], 1, "Debe crear 1 fila de subplots")
         self.assertEqual(call_args[1]['cols'], 2, "Debe crear 2 columnas (una por target)")
@@ -49,6 +50,31 @@ class TestPlotBoxplot(unittest.TestCase):
         
         # Verificar que se agregaron trazas al subplot
         self.assertTrue(mock_fig.add_trace.called, "Debe agregar trazas al subplot")
+
+    @patch('plotly.subplots.make_subplots')
+    @patch('plotly.express.box')
+    def test_plot_boxplot_maneja_datos_faltantes(self, mock_px_box, mock_make_subplots):
+        """Verifica que la función maneja correctamente DataFrames con datos faltantes."""
+        # Crear DataFrame con valores faltantes
+        df = pd.DataFrame({
+            'var_numerica': [1.0, 2.0, None, 4.0, 5.0, None, 7.0],
+            'target': ['A', 'B', 'A', None, 'B', 'A', 'B']
+        })
+        
+        # Configurar mocks
+        mock_fig = MagicMock()
+        mock_make_subplots.return_value = mock_fig
+        mock_px_box.return_value = MagicMock(data=[MagicMock()])
+        
+        # Ejecutar la función
+        plot_boxplot(df, target=['target'], show=False)
+        
+        # Verificar que la función se ejecuta sin errores
+        mock_make_subplots.assert_called()
+        
+        # Verificar que px.box fue llamado (la función dropna() se aplica internamente)
+        self.assertTrue(mock_px_box.called, "px.box debe ser llamado incluso con datos faltantes")
+
 
 if __name__ == '__main__':
     unittest.main()

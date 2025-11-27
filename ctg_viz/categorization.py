@@ -30,7 +30,7 @@ def categorization(self) -> tuple[list[str], list[str]]:
     vard: list[str] = []
     
     for col in self.df.columns:
-        if self.df[col].dtype == 'int64' or self.df[col].dtype == 'float64' and self.df[col].nunique() > 10:
+        if (self.df[col].dtype == 'int64' or self.df[col].dtype == 'float64') and self.df[col].nunique() > 10:
             varc.append(col)
         else:
             vard.append(col)
